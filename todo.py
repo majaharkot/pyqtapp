@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 from PyQt5.QtWidgets import QMessageBox, QInputDialog
 from PyQt5.QtWidgets import QApplication, QWidget
-from gui import Ui_Widget
+from gui import Ui_Widget, LoginDialog
 
 
 class Zadania(QWidget, Ui_Widget):
@@ -17,17 +17,17 @@ class Zadania(QWidget, Ui_Widget):
         self.koniecBtn.clicked.connect(self.koniec)
         
     def loguj(self):
-        login, ok = QInputDialog.getText(self, 'Logowanie', 'Podaj login:')
-        if ok:
-            haslo, ok = QInputDialog.getText(self, 'Logowanie', 'Podaj haslo:')
-            if ok:
-                if not login or not haslo:
-                    QMessageBox.warning(
-                        self, 'Błąd', 'Pusty login lub hasło!', QMessageBox.Ok)
-                    return
-                QMessageBox.information(
-                    self, 'Dane logowania',
-                    'Podano: ' + login + ' ' + haslo, QMessageBox.Ok)
+        login, haslo, ok = LoginDialog.getLoginHaslo(self)
+        if not ok:
+            return
+
+        if not login or not haslo:
+            QMessageBox.warning(self, 'Błąd',
+                                'Pusty login lub hasło!', QMessageBox.Ok)
+            return
+
+        QMessageBox.information(self, 'Dane logowania', 'Podano: ' +
+                                login + ' ' + haslo, QMessageBox.Ok)
 
     def koniec(self):
         self.close()
